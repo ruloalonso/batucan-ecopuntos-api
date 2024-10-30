@@ -18,7 +18,7 @@ const createUser = async (req, res) => {
       return res.status(400).json({ message: "El nombre es obligatorio" });
     }
 
-    const newUser = new User({ name });
+    const newUser = new User({ _id: new mongoose.Types.ObjectId(), name });
     const savedUser = await newUser.save();
 
     res.status(200).json(savedUser);
@@ -29,5 +29,5 @@ const createUser = async (req, res) => {
 
 module.exports = {
   getAllUsers,
-  createUser
+  createUser,
 };

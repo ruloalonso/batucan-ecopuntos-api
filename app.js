@@ -32,8 +32,8 @@ fs.readdirSync(models)
   .filter((file) => ~file.search(/^[^.].*\.js$/))
   .forEach((file) => require(join(models, file)));
 
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+const actionsRouter = require("./routes/actions.routes");
+const usersRouter = require("./routes/users.routes");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -45,7 +45,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use("/", indexRouter);
+app.use("/actions", actionsRouter);
 app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler

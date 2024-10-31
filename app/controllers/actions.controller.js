@@ -25,7 +25,11 @@ const createAction = async (req, res) => {
 
     const savedAction = await newAction.save();
 
-    res.status(200).json(savedAction);
+    const populatedAction = await Action.findById(savedAction._id)
+      .populate("user")
+      .populate("type");
+
+    res.status(200).json(populatedAction);
   } catch (error) {
     res.status(500).json({ message: "Error al crear la acción", error });
   }

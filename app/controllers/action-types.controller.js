@@ -14,14 +14,14 @@ const getAllActionTypes = async (req, res) => {
 
 const createActionType = async (req, res) => {
   try {
-    const { name, points } = req.body;
+    const { description, points } = req.body;
 
-    if (!name || !points) {
+    if (!description || !points) {
       return res.status(400).json({ message: "Faltan campos obligatorios" });
     }
     const newActionType = new ActionType({
       _id: new mongoose.Types.ObjectId(),
-      name,
+      description,
       points,
     });
 

@@ -34,6 +34,7 @@ fs.readdirSync(models)
 
 const actionsRouter = require("./routes/actions.routes");
 const usersRouter = require("./routes/users.routes");
+const actionTypesRouter = require("./routes/action-types.routes");
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -43,6 +44,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/actions", actionsRouter);
 app.use("/users", usersRouter);
+app.use("/action-types", actionTypesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

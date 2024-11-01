@@ -3,9 +3,30 @@ const User = mongoose.model("User");
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.aggregate([
+      {
+        $lookup: {
+          from: "actions",
+          localField: "_id",
+          foreignField: "user",
+          as: "actions",
+        },
+      },
+      {
+        $addFields: {
+          points: { $sum: "$actions.points" },
+        },
+      },
+      {
+        $project: {
+          actions: 0,
+        },
+      },
+    ]);
+
     res.status(200).json(users);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error al obtener los usuarios", error });
   }
 };

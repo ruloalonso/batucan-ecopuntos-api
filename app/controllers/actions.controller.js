@@ -3,7 +3,7 @@ const Action = mongoose.model("Action");
 
 const getAllActions = async (req, res) => {
   try {
-    const actions = await Action.find().populate("user").populate("type");
+    const actions = await Action.find().populate("user");
     res.status(200).json(actions);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener las acciones", error });
@@ -12,22 +12,23 @@ const getAllActions = async (req, res) => {
 
 const createAction = async (req, res) => {
   try {
-    const { userId, date, actionTypeId } = req.body;
+    const { userId, date, description, points } = req.body;
 
-    if (!userId || !date || !actionTypeId) {
+    if (!userId || !date || !description || !points) {
       return res.status(400).json({ message: "Faltan campos obligatorios" });
     }
     const newAction = new Action({
-      date: date,
       user: userId,
-      type: actionTypeId,
+      date,
+      description,
+      points,
     });
 
     const savedAction = await newAction.save();
 
-    const populatedAction = await Action.findById(savedAction._id)
-      .populate("user")
-      .populate("type");
+    const populatedAction = await Action.findById(savedAction._id).populate(
+      "user"
+    );
 
     res.status(200).json(populatedAction);
   } catch (error) {

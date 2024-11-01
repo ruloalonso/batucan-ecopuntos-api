@@ -36,7 +36,26 @@ const createAction = async (req, res) => {
   }
 };
 
+const deleteById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedAction = await Action.findByIdAndDelete(id);
+
+    if (!deletedAction) {
+      return res.status(404).json({ message: "Accion no encontrada" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Acción eliminada correctamente", deletedAction });
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar la acción", error });
+  }
+};
+
 module.exports = {
   getAllActions,
   createAction,
+  deleteById,
 };

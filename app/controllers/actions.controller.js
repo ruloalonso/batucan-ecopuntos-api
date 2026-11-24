@@ -54,8 +54,44 @@ const deleteById = async (req, res) => {
   }
 };
 
+// Vacía la colección de acciones (p. ej. al empezar un curso nuevo).
+// Antes de borrar, copia todas las acciones a "actionsarchive" para no perderlas.
+const resetActions = async (req, res) => {
+  try {
+    const label = String(req.body?.label || "").trim();
+    const archivedAt = new Date();
+
+    const actions = await Action.find().lean();
+
+    if (actions.length > 0) {
+      const archive = mongoose.connection.collection("actionsarchive");
+      await archive.insertMany(
+        actions.map(({ _id, ...action }) => ({
+          ...action,
+          originalId: _id,
+          label,
+          archivedAt,
+        }))
+      );
+    }
+
+    const { deletedCount } = await Action.deleteMany({
+      _id: { $in: actions.map((action) => action._id) },
+    });
+
+    res.status(200).json({
+      message: "Acciones archivadas y eliminadas correctamente",
+      archived: actions.length,
+      deleted: deletedCount,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error al vaciar las acciones", error });
+  }
+};
+
 module.exports = {
   getAllActions,
   createAction,
   deleteById,
+  resetActions,
 };

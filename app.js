@@ -15,11 +15,13 @@ const app = express();
 app.use(cors())
 
 async function main() {
-  await mongoose.connect(
+  // MONGODB_URI permite apuntar a otra base de datos (p. ej. un Mongo local).
+  const uri =
+    process.env.MONGODB_URI ||
     "mongodb+srv://ruloalonso:" +
       process.env.DB_PASS +
-      "@batucan-ecopuntos.2srm9.mongodb.net/"
-  );
+      "@batucan-ecopuntos.2srm9.mongodb.net/";
+  await mongoose.connect(uri);
   console.log("connected");
 }
 
